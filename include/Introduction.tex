@@ -1,0 +1,57 @@
+% CREATED BY DAVID FRISK, 2018
+\chapter{Introduction}
+
+%During the passing decades, the technical markets have seen an increase in popularity of Machine learning oriented solutions. Particularly deep learning and Neural Networks based solution are proven succéssfull and are currently widely utilized in the field of Image recognition \cite{simonyan2014very}, speech recognition \cite{hinton2012deep}, and Natural Language Processing \cite{mikolov2013efficient}. While Neural networks have proven to be succéssfull in these fields, they are poor at quantifying predictive uncertainty and tend to produce overconfident predictions as pointed out by Lakshminaryanan et al. \cite{lakshminarayanan2017simple}.
+During the passing decade, the technical market and software application industry have seen a rise of popularity of Artificial Intelligence (AI) and Machine Learning based solution \cite{forbesaireport2018}. According to the annual report by AI Index\cite{aiindex2018}, number of science papers dealing with AI and Machine Learning have seen a significant increase in publication between 2010 -- 2017.
+
+This is no wonder since many recent research and development shows that Deep  Learning based methods achieves state-of-of the art performance in numerous fields. This includes computer vision \cite{krizhevsky2012imagenet}, Image recognition \cite{simonyan2014very}, speech recognition \cite{hinton2012deep}, Natural Language Processing \cite{mikolov2013efficient}, and Bioinformatics\cite{alipanahi2015predicting}.
+Well documented success of Deep Learning Methods includes that of conquering the game of Go\cite{silver2016mastering} and the RTS game StarCraft2\cite{vinyals2017starcraft}. Recent research has also explored NN based Deep learning models viability in more complex areas such as sentiment analysis in short text \cite{dos2014deep} going as far as sarcasm detection in text \cite{poria2016deeper,ptavcek2014sarcasm}, Driving autonomous vehicles \cite{bojarski2016end}, and also usage in health care \cite{miotto2017deep}.
+
+A major challenge in Machine Learning is to measure the confidence and/or uncertainty of the predictions made by the algorithm \cite{quinonero2006evaluating}. While there exist measurement metrics in statistical mechanics and information theory that measures uncertainty, such as information entropy \cite{shannon1948mathematical}, negative log probability measurements\cite{quinonero2006evaluating}, and Bayesian Methods \cite{gal2016dropout}, there exist no uniformly agreed process on how to measure uncertainty.
+
+Another problem in deep learning is that Neural network classifiers tends to be overconfidente in their decisions making\cite{lakshminarayanan2017simple}. Especially when trained on smaller data sets \cite{amodei2016concrete}. Studies have shown that a consequence of this overconfidence can cause the algorithm make incorrect predictions without\cite{nguyen2015deep} without being able to recognize that it has. In some cases, this is brushed off as overfitting \cite{goodfellow2014generative}.
+
+Recent research and development have been exploring the possibilities for using Deep learning approaches to drive autonomous vehicles \cite{bojarski2016end,tian2018deeptest} and for application in various field of advanced health-care \cite{miotto2017deep}. Being able to measure the predictive uncertainty are crucial for decision making in these areas as it can be used to forecast eventual incorrect decision making by the classifier. 
+
+As suggested by \cite{mandelbaum2017distance}, having well calibrated uncertainty (or confidence) measurements can give an indication to weather to trust the prediction by the algorithm or not. In the case of healthcare, this correspons to consulting another expert in a diagnosis. In the case of autonomous vehicles, the algorithm can use this measurements to tell the driver to take the stirring wheel when faced with high uncertainty.
+
+\section{Problem specification}
+\label{sect:probspec}
+
+It is important for us to be able to predict if a Machine learning algorithm is uncertain about its decision. With proper uncertainty measurements, the end user can better decide on weather or not to trust the decision made by piece of software that uses Machine Learning.
+
+In this thesis, we analyze the methods proposed by Lakshminarayanan et. al.\cite{lakshminarayanan2017simple} for uncertainty estimation using deep neural network ensembles. These methods are evaluated using classification of handwritten digits as reference problem with focus on out-of-distribution inputs and inputs affected with various type of distortion.
+
+Throughout our experiments, we hope to answer the following questions
+\begin{itemize}
+    \item How does \cite{lakshminarayanan2017simple} perform with regards to out of distribution and distorted inputs?
+    \item Can we use the estimated predictive uncertainty from \cite{lakshminarayanan2017simple} to forecast incorrect predictions?
+\end{itemize}
+
+%Finally, we discuss and compare the methods with that of other related work. Particularly that of \cite{mandelbaum2017distance} and \cite{devries2018learning}.
+
+\subsection{Scope}
+
+This thesis mainly focuses on analysing the method proposed by Lakshminarayanan et. al. \cite{lakshminarayanan2017simple} for estimating predictive uncertainty. The method involves training an ensemble of deep neural networks, using specific objective function for training. As thus, experiment setup, hyper parameters, and network structures are primarly based on the setting used by \cite{lakshminarayanan2017simple}.
+
+Unlike Lakshminarayanan et. al. \cite{lakshminarayanan2017simple}, who performed experiments on a wide array problems and datasets for both regression and classification. This thesis mainly uses a single classification problem, which is classifying images of single handwritten digits with focus on out-of-distribution inputs and distorted input. Line thickness adjustments and salt and pepper noise are the two main distortion types we focus on for experiments.
+
+\subsection{Contributions}
+
+The main contribution of this thesis is the in depth analysis of the uncertainty estimation scheme proposed by \cite{lakshminarayanan2017simple}. This analyzes is carried out using the classification problem of handwritten digits with the MNIST dataset as reference.
+
+This thesis also provide a more thorough analysis of the scheme by \cite{lakshminarayanan2017simple} with regards to out of distribution inputs and inputs affected by distortion. Lakshminarayanan et. al. also performed experiments involving out of distributions. The contributions of this thesis in this regard includes the expanded focus on out of distribution testing and the use of inputs that are closer to the training examples, but different enough to be regarded as out of distribution examples. 
+
+The final contribution of this thesis is the insight in to relationship between predictive uncertainty and incorrect decision making in deep learning algorithm. And how it can be used to forecast an incorrect decision based on the input. Additionally, another prediction schemes that were not used by \cite{lakshminarayanan2017simple} as to provide an insight of how this prediction schemes performs in comparison to the one originally used by \cite{lakshminarayanan2017simple}.
+
+\section{Prior work}
+
+The estimation of predictive uncertainty in Machine learning predictors was highlighted as a problem already by \cite{quinonero2006evaluating}. The case of neural networks being bad at assessing their predictive uncertainty is highlighted by many works such as \cite{lakshminarayanan2017simple,lowd2005adversarial} and \cite{nguyen2015deep}. While their exist no method for measuring the uncertainty in a neural network prediction, lots of applications points towards over-fitting being the reason for networks to make incorrect decisions \cite{goodfellow2014generative}.
+
+Ghahramani et. al.\cite{gal2016dropout} proposed a method where the usage of Bayesian networks, coupled with dropout units, and Monte-Carlo simulations as a method for estimating the predictive uncertainty in Neural Networks. While giving well calibrated results, this method requires heavy modifications to the training process of ANN predictors\cite{lakshminarayanan2017simple}.
+
+Lakshminarayanan et. al. \cite{lakshminarayanan2017simple} from google deepmind proposed a method that was inspired by that of \cite{gal2016dropout} motivated by that MC-Dropout are analogous to neural network ensembles in terms of how it's performed. Their method training a neural network ensemble to perform a machine learning task and used the output distribution of this ensemble to estimate the predictive uncertainty. This method is demonstrated to outperform \cite{gal2016dropout} while being easier to implement in practice.
+
+Mandelbaum et. al. \cite{mandelbaum2017distance} proposed a evaluation metric for certainty (confidence) prediction that is based on the distance between the resulting vector of neuron states in the earlier upstream layers. However, their research question is different to that of Lakshminarayanan \cite{lakshminarayanan2017simple} in that while \cite{lakshminarayanan2017simple} is interested in the neural network uncertainty and indecisiveness based on the distribution of the outputs, Mandelbaum et. al.\cite{mandelbaum2017distance} is measuring the confidence in the prediction distribution itself. 
+
+Like Mandelbaum et. al. \cite{mandelbaum2017distance}, DeVries. et. al. \cite{devries2018learning} proposed a method of measuring the confidence of a neural network prediction itself rather than the predictive certainty that can be found in the neural network output. They suggested a training method that let's the neural network learn to recognize it's own confidence in the predictions they make. Both \cite{mandelbaum2017distance} and \cite{devries2018learning} requires heavy modification in the neural network training process inorder to work properly.

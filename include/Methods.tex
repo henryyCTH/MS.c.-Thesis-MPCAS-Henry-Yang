@@ -1,0 +1,54 @@
+\chapter{Description of Simulations}
+
+In this chapter, we describe the series of experiments that we will perform in order to analyze the predictive uncertainty estimation scheme described in \ref{sect:uncertainty}. We start off by explaining the basic setup for every experiments, including sizes of ensembles and network structures will be specified and motivated in this chapter. The aim of this chapter is to give the readers enough information to reproduce our simulations and results. In general, these analysis is carried out by deconstructing the methods to it's components, and each component separately and built together.
+
+\section{Datasets and Experiments setup}
+
+As specified in section \ref{sect:probspec} this thesis will focus on analysing the scheme proposed by \cite{lakshminarayanan2017simple} using image classification problem of recognizing handwritten digits using the MNIST dataset. Therefore the training samples from MNIST will be used as inputs our neural networks during training. Apart from using the the 10000 testing samples from MNIST, a separate testing dataset consisting of about 1000 self collected handwritten digits will also be used. 
+
+For most of our experiments, we will use an ensemble of size 20. This is because Lakshminarayanan et. al. \cite{lakshminarayanan2017simple} observed that their measurements converges on large ensemble sizes in their experiments, and it really starts to show around the ensemble size 20. This convergence is also present in our experiments. If not specified, the ensembles will be consisting of Multilayered-Perceptrons with 3 hidden layers with 200 neurons in each layer. This is the network structure the network structure that was used by \cite{lakshminarayanan2017simple} in their simulation. For some of our experiments, we will also use ensembles of convolutional neural networks with 2 convolutional layers with 16 neurons in the first convolutional layer, and 32 in the second layer, this a self constructed structure. 
+
+Each network in the ensemble are trained using the whole training set from MNIST using the procedure described in section \ref{sect:train}. The Adam optimizer is used as the training algorithm \cite{kingma2014adam} since this is also used by Lakshminarayanan \cite{lakshminarayanan2017simple}. The learning rate of the algorithm will not be fixed to 0.1 as in the experiments by \cite{lakshminarayanan2017simple} during training. Instead, we use a non-fixed learning rate with the initial learning rate set to 0.001. This is because we observe that this training setting gives us better results. Since Lakshminarayanan et. al. \cite{lakshminarayanan2017simple} listed adversarial training as optional, we only briefly compare the results of using adversarial training with the once without. In majority of the experiment, we don't use adversarial training.
+
+As stated in section \ref{sect:scoring} the predictive uncertainty will be measured using information entropy. Classification error will also be measured in order to see the relation between entropy and classification error. in their experiments, Lakshminarayanan et. al. \cite{lakshminarayanan2017simple} used the negative log-likelihood function (presented in eq \eqref{eq:nll}) to measure uncertainty. We opted to use entropy since the knowledge of the targets are not required when using entropy. While NLL does capture uncertainty \cite{quinonero2006evaluating}, another reason for us to favor entropy over NLL is that NLL is not a bounded function and goes to infinity as the predicted probability of the correct class goes to 0.
+
+\section{Testing digits and distortions}
+
+As we mentioned in the previous section, two testing datasets will be used in our experiments. The first one being the testing samples that are apart of the MNIST dataset, the second one is a dataset of bilevel 1000 images , hereby refered to as the CTHMNIST dataset in this report. These digits are mainly collected from bachelor students of the IT-Student union division of Chalmers University of Technology. There are two reasons for creating the CTHMNIST dataset:
+\begin{enumerate}
+    \item It provides a better insight of how the methods proposed by Lakshminarayanan et. al. performs on out-of-distribution inputs that are similar to the once in MNIST.
+    \item Since the original images are available to us, it is easier to apply different types of distortions to them without having to upscale the images, since upscaling an image and then downscaling the image doesn't guarantee that the same image is being reproduced, and may produce additional distortions through artifacts from the scaling algorithms\cite{amanatiadis2008performance}.
+\end{enumerate}
+
+Lakshminarayanan et. al. \cite{lakshminarayanan2017simple} performed some experiments with out-of-distribution dataset by giving using the NotMNIST dataset\cite{notmnist} as input to classifier trained on the MNIST dataset. We opted to use the CTHMNIST dataset since the inputs are much closer to the MNIST dataset vs the NotMNIST dataset which consist of letters. 
+
+Initial experiments involving only ensembles with a single member will be performed on CTHMNIST in order to compare some different attributes between CTHMNIST and the MNIST dataset. In the next few experiments, distortions and deformations are applied to the digits in CTHMNIST to test the performance of \cite{lakshminarayanan2017simple} with distorted input. We mainly focus on two types of distortion : line-thickness mutation, and salt and pepper noise. The original CTHMNIST digits are first downscaled and fitted to a $(200\times200)$ pixels box with a padding of 40 pixels applied using similar method described in \cite{lecunmnist} before applying the distortions. The digits are downscaled to match the mnist dimensions of $(28\time28)$ before being given as input to the classifiers. 
+
+\subsection{Line thickness}
+
+The line-thickness depends of handwritten digits are determined by the thickness of the pen (or brush) that was used to write these, and the real life dimensions (sizes). Therefore, ANN classifiers trained on the MNIST digits might fail to recognize handwritten digits that are not part of the MNIST dataset simply due to the digits having a different line thickness.
+
+In these experiments, the line thickness of the CTHMNIST are calculated and adjusted using the algorithm decribed by Kozielski et. al. \cite{kozielski2012moment}. We adjust the images individually so that we end up 29 datasets with mutated CTHMNIST digits with the line thickness adjusted to target values ranging from 2-30. These mutated digits is fed to the ANN classifiers to measure how the classification error and entropy will change as a function of Line thickness.
+
+A detailed description of the algorithm from \cite{kozielski2012moment} can be found in appendix \ref{app:1}. Additionally to measuring the performance of ensemble methods, we also measure the classification error and entropy of deep learning classifiers consisting only of one ANN in order to compare the ensemble approach to models not using ensembles in terms of performance and predictive uncertainty estimation.
+
+\subsection{Salt and Pepper Noise}
+
+The next type of distortion we explore are that of salt and pepper noice. We define salt and pepper noise as a distortion method where the binary values of randomly selected pixels flipped using a binary NOT operation. Since CTHMNIST consist of grey-scale images due to the interpolation algorithms we use for downscaling, the selected none zero pixels are set to 0, and the selected zero (white pixels) are set to 255.
+
+We apply salt and pepper noise in two ways. First, the CTHMNIST digits are adjusted to a line thickness with the lowest classification error, we then apply salt and pepper noise by randomly selecting non zero pixels and set them to zero. Then once again from the images of optimal line thickness, we do the opposite by randomly selecting zero pixels and set them to 255. In the second approach, we randomly select multiples of 200 pixels to be flipped using the operation described in previously in this section.
+
+\section{Predictive uncertainty and incorrect decisions}
+
+In these last few experiments, we explore how entropy is related to incorrect decisions making in deep learning models. An example of incorrect decision making in our case is to classify an image of a 4 as 9. In autonomous vehicles however, an example of incorrect decision is to not hit the brake in a scenario where hitting the brake is the correct decision. An example from health care is to give a negative HIV diagnosis for a patient that actually contracted HIV. 
+Both of these faulty decisions leads to terrible consequences for the victim.
+
+These last few experiments are performed by classifying the images using trained deep learning classifiers. Then the correctly classified images are separated from the incorrectly classified images. Finally, we evaluate the entropy of the outputs for both cases.
+
+This experiment is performed using the MNIST test set,  CTHMNIST digits without applying line thickness adjustments, and CTHMNIST adjusted to the line thickness with minimal classification error. Once again, we compare the results produced by Deep learning models with only one ANN classifier to that of an ensemble. This is done using both Multi-layer perceptrons and CNNs. Additionally, we also briefly analyse the impact of using adverserial training and ensembles using member voting as prediction scheme, as well as looking at the regions of high average entropy using only ensemble of perceptrons.
+
+\section{Implementation details}
+
+The experiments are implemented using python. This is because python as a programming language provides convenient libraries such as SciPy\cite{bressert2012scipy} and NumPy\cite{van2011numpy,bressert2012scipy} that are useful for high level numerical and linear algebraic operations similar to that of MatLab. Available in Python is also Matplotlib which we use to visualize the results.
+
+Most importantly, the Deep learning library Keras is mainly a python library\cite{chollet2018deep}. Keras provides many usable tools for building and training neural network based models and algorithms. Keras also makes use of Google's Tensorflow as a backend\cite{gulli2017deep,abadi2016tensorflow}. The models we use are implemented using Keras functional API.

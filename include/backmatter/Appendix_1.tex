@@ -1,0 +1,34 @@
+% CREATED BY DAVID FRISK, 2018
+\chapter{Appendix 1}
+
+\section{Algorithm for modifying the line thickness}
+\label{app:1}
+Let $I(x,y)$ denote a two dimensional image and a structuring element of radius $r$. Kozielski et. al. \cite{kozielski2012moment} described the operation of making the lines in the image thicker as a morphological dilation. A dilated image $I'(x,y)$ fulfills is calculated using eq. \eqref{eq:dilate}
+
+\begin{equation}
+    \label{eq:dilate}
+    I'(x,y) = \max_{r_x,r_y : d(r_x,r_y) < r} I(x+r_x,y+r_y) \text{ for } r \geq 0
+\end{equation}
+
+If $r \leq 0$ then the operation becomes that of a thinning operation that is a variation of morphological erosion. Described in eq \eqref{eq:erode}
+
+\begin{equation}
+    \label{eq:erode}
+    I'(x,y) = \min_{r_x,r_y : d(r_x,r_y) < r} I(x+r_x,y+r_y) \text{ for } r \geq 0
+\end{equation}
+
+Given these operations, the line thickness $\tau$ of for example an image $I(x,y)$ of a handwritten digit can be calculated using \eqref{eq:lt} where $G(I)$ denotes the image gradient of $I(x,y)$ which is defined by \cite{kozielski2012moment} as the difference $I_{thick} - I_{thin}$ between a thinned image $I_{thin}$ and a thicked image $I_{thick}$ by a structuring element of radius 1.
+\begin{equation}
+    \label{eq:lt}
+    \tau = 2\frac{\sum_x\sum_yI(x,y)}{\sum_x\sum_yG(I)(x,y)}
+\end{equation}
+
+Suppose that an image $I(x,y)$ is supposed to be adjusted to a target line thickness $T$, then the algorithm can be described using the following steps.
+
+\begin{enumerate}
+    \item calculate the radius of a structuring element as $r = T - \tau$ (using the current line thickness).
+    \item Apply dilation or erosion on the image using either eq. \eqref{eq:dilate} or \eqref{eq:erode}.
+    \item Calculate the new line thickness $\tau_{new}$ using \eqref{eq:lt}.
+\end{enumerate}
+
+These steps are repeated until $|\tau_{new} - T| \leq \epsilon$ where epsilon stands for an error division. Throughout our experiments, $\epsilon$ is set to 0.9.

@@ -1,0 +1,16 @@
+% CREATED BY DAVID FRISK, 2018
+\chapter{Report summery and Conclusion}
+
+The main goal of this thesis is to understand and analyze a method for estimating predictive uncertainty in neural networks. This method was proposed by Lakshminarayanan et. al. from Deep mind and involves using an ensemble of Neural networks. The neural networks are trained using energy functions with specific properties. Optionally, adversarial training can be used to improve the performance of the ensemble.
+
+The proposed method is analyzed by deconstructing it into its main components. The analysis were carried out using classification of handwritten digits using the MNIST dataset. The networks are trained using the MNIST training set. We focused our analysis on out-of-distribution inputs and distorted inputs. This is done by using both the MNIST test set and a separate dataset of handwritten digits collected from IT-Bachelor students, some Ph.d. students and researchers from Chalmers. We used line-thickness mutations and salt and pepper noise as the main two distortion types for our experiments. The predictive uncertainty is measured using classification error and information entropy.
+
+Throughout our experiments, we observed that the classification error gets worse the more the inputs diverged from that of the MNIST. We also found that entropy also expresses this behaviour which indicates that average entropy are strongly related to classification error. This behaviour is observed both with ensembles and single neural network. In general however, ensemble solutions generates higher entropy values regardless of whether voting or prediction averaging is used as ensemble prediction scheme.
+
+While low entropy usually indicates correct predictions in our experiments regardless of whether or not the classifier is an ensemble. We observed that the output of single neural network classifiers have low entropy levels even when the prediction is incorrect. This is not true when using ensembles where the outputs shows higher entropy levels when the prediction is incorrect. This goes to show that the uncertainty measurements from ensembles are much better suited for forecasting incorrect predictions when it comes to classifying handwritten digits. 
+
+To summarize and conclude this report, we demonstrated that the proposed method for estimating the predictive uncertainty in neural networks classifiers does indeed produce well calibrated results in this area. The major strength of this model is the usage of ensembles which we find is the most important component in this scheme. This thesis demonstrated that uncertainty estimation from ensembles are more satisfactory than that of singular neural networks. This comes with the strength of ensembles being better at making accurate decision overall. 
+
+\section{Future work}
+
+While the usage of ensembles proved to be more effective when it comes to making predictions and capturing predictive uncertainty, ensemble based models are still resource heavy in terms of computational time and memory. Worth exploring is to find a model that behaves similar to ensembles but are computationally cheaper to use.
